@@ -5,3 +5,7 @@ Polyrhythm is the simultaneous use of two or more rhythms that are not readily p
 ***
 
 > Know more about [Polyrhythms](https://en.wikipedia.org/wiki/Polyrhythm)
+
+***
+
+> Check out the [app](https://polyrhythms-40384.web.app/)
