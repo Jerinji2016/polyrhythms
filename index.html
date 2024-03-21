@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Polyrhythms</title>
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@100..800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="scripts/script.js" defer></script>
+</head>
+
+<body>
+    <div class="control-bar">
+        <button class="toggle" id="sound-toggle" type="button" title="Toggle Pulse" data-toggled="false"
+            onclick="handleSound()">
+            <span class="material-symbols-outlined on">music_note</span>
+            <span class="material-symbols-outlined off">music_off</span>
+        </button>
+
+        <button class="toggle" id="ambient-noise-toggle" type="button" title="Toggle Rain" data-toggled="false"
+            onclick="handleRain()">
+            <span class="material-symbols-outlined on">water_drop</span>
+            <span class="material-symbols-outlined off">format_color_reset</span>
+        </button>
+    </div>
+
+    <div class="title">
+        <img src="images/title.png" alt="title">
+    </div>
+
+    <div id="sound-message">
+        <p>Click anywhere to toggle sound</p>
+    </div>
+
+    <canvas id="paper"></canvas>
+</body>
+
+</html>
