@@ -8,4 +8,4 @@ Polyrhythm is the simultaneous use of two or more rhythms that are not readily p
 
 ***
 
-> Check out the [app](https://polyrhythms-40384.web.app/)
+> Check out the [app](https://polyrhythms.jerinjimmy.com/)
