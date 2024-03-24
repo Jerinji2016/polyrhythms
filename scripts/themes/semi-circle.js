@@ -28,8 +28,8 @@ export default class SemiCircle extends BaseTheme {
         };
     }
 
-    determineOpacity(currentTime, lastImpactTime) {
-        const ttl = currentTime - lastImpactTime;
+    determineOpacity(lastImpactTime) {
+        const ttl = this.currentTime - lastImpactTime;
         if (!settings.isSoundEnabled || ttl > OPACITY_DURATION)
             return MIN_OPACITY;
 
@@ -79,7 +79,7 @@ export default class SemiCircle extends BaseTheme {
         arcs.forEach((arc, index) => {
             const radius = initialArcRadius + index * spacing;
 
-            this.pen.globalAlpha = this.determineOpacity(this.currentTime, arc.lastImpactTime);
+            this.pen.globalAlpha = this.determineOpacity(arc.lastImpactTime);
 
             this.drawArc(radius, arc.color);
             this.drawPoint(radius, arc);
