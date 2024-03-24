@@ -1,7 +1,7 @@
 import { settings } from "./script.js";
 
 export const getAudio = (index) => {
-    const audio = new Audio(`assets/audio/vibraphone/vibraphone-key-${index}.wav`)
+    const audio = new Audio(`assets/audio/vibraphone/key-${index}.wav`)
     audio.volume = settings.volume;
     return audio;
 }
