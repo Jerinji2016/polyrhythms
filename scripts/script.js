@@ -1,5 +1,3 @@
-// Ref: https://codepen.io/Hyperplexed/pen/XWxqgGE?editors=1100
-
 const paper = document.getElementById("paper");
 const pen = paper.getContext("2d");
 
@@ -71,7 +69,7 @@ const getAudio = (index) => {
 
 const determineOpacity = (currentTime, lastImpactTime, duration, minOpacity, maxOpacity) => {
     const ttl = currentTime - lastImpactTime;
-    if (ttl > duration)
+    if (!settings.isSoundEnabled || ttl > duration)
         return minOpacity;
 
     const opacity = ttl / duration;
