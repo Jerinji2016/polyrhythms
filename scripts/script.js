@@ -1,3 +1,4 @@
+import { FullCircle } from "./themes/full-circle.js";
 import SemiCircle from "./themes/semi-circle.js";
 import { calculateNextImpactTime } from "./utils.js";
 
@@ -69,7 +70,8 @@ const draw = () => {
     paper.width = paper.clientWidth;
     paper.height = paper.clientHeight;
 
-    const theme = new SemiCircle(pen, paper, currentTime, elapsedTime);
+    const theme = new FullCircle(pen, paper, currentTime, elapsedTime);
+    // const theme = new SemiCircle(pen, paper, currentTime, elapsedTime);
     theme.draw();
 
     requestAnimationFrame(draw);
