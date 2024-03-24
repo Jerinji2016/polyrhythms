@@ -1,51 +1,74 @@
+import { DISPLAY_THEME } from "./constants.js";
+import { FullCircle } from "./themes/full-circle.js";
+import SemiCircle from "./themes/semi-circle.js";
+import { calculateNextImpactTime } from "./utils.js";
+
 const paper = document.getElementById("paper");
 const pen = paper.getContext("2d");
 
-const startTime = new Date().getTime();
+export const startTime = new Date().getTime();
 
-let start, end, center;
-let length;
-
-const settings = {
+export const settings = {
     resetDuration: 600,
     maxLoops: 50,
     volume: 0.15,
     isSoundEnabled: false,
-    isAmbientNoiseEnabled: false
-}
-
-const toggles = {
-    sound: document.querySelector("#sound-toggle"),
-    ambientNoise: document.querySelector("#ambient-noise-toggle"),
+    isAmbientNoiseEnabled: false,
+    displayTheme: DISPLAY_THEME.fullCircle,
 }
 
 const colors = Array(21).fill("#A6C48A");
 
-const calculateNextImpactTime = (currentImpactTime, velocity) => {
-    return currentImpactTime + (Math.PI / velocity) * 1000;
+export const arcs = colors.map((color, index) => {
+    const oneFullLoop = 2 * Math.PI;
+    const velocity = oneFullLoop * (settings.maxLoops - index) / settings.resetDuration;
+    const lastImpactTime = 0;
+    const nextImpactTime = calculateNextImpactTime(startTime, Math.PI, velocity)
+    return { color, velocity, lastImpactTime, nextImpactTime }
+});
+
+const toggles = {
+    sound: document.querySelector("#sound-toggle"),
+    ambientNoise: document.querySelector("#ambient-noise-toggle"),
+    customizations: document.querySelector("#customize-toggle"),
+}
+
+const selectors = {
+    ambience: document.querySelector("#ambience"),
+    displayTheme: document.querySelector("#display-theme"),
+    keyNote: document.querySelector("#key-note"),
 }
 
 document.onvisibilitychange = () => {
     handleSound(false);
-    handleRain(false);
+    rainAudio.pause();
 }
 
-paper.onclick = () => handleSound();
+paper.onclick = () => {
+    const isCustomizationPanelOpen = toggles.customizations.dataset.toggled;
+    if (isCustomizationPanelOpen == "true") {
+        toggles.customizations.dataset.toggled = false;
+        return;
+    }
+
+    handleSound();
+}
 
 const handleSound = (enabled = !settings.isSoundEnabled) => {
     settings.isSoundEnabled = enabled;
     toggles.sound.dataset.toggled = enabled;
 
-    handleRain(enabled);
+    if (settings.isAmbientNoiseEnabled)
+        handleRain(true);
 }
 
-const rainAudio = new Audio("ambience/soft_rain.mp3");
+const rainAudio = new Audio("assets/audio/ambience/soft_rain.mp3");
 
 const handleRain = (enabled = !settings.isAmbientNoiseEnabled) => {
     settings.isAmbientNoiseEnabled = enabled;
     toggles.ambientNoise.dataset.toggled = enabled;
 
-    if (enabled) {
+    if (enabled && settings.isSoundEnabled) {
         rainAudio.volume = 0.5;
         rainAudio.play();
     } else {
@@ -53,60 +76,19 @@ const handleRain = (enabled = !settings.isAmbientNoiseEnabled) => {
     }
 }
 
-const arcs = colors.map((color, index) => {
-    const oneFullLoop = 2 * Math.PI;
-    const velocity = oneFullLoop * (settings.maxLoops - index) / settings.resetDuration;
-    const lastImpactTime = 0;
-    const nextImpactTime = calculateNextImpactTime(startTime, velocity)
-    return { color, velocity, lastImpactTime, nextImpactTime }
-});
-
-const getAudio = (index) => {
-    const audio = new Audio(`notes/vibraphone-key-${index}.wav`)
-    audio.volume = settings.volume;
-    return audio;
+const handleCustomization = () => {
+    const isCustomizationPanelOpen = toggles.customizations.dataset.toggled == "true";
+    toggles.customizations.dataset.toggled = !isCustomizationPanelOpen;
 }
 
-const determineOpacity = (currentTime, lastImpactTime, duration, minOpacity, maxOpacity) => {
-    const ttl = currentTime - lastImpactTime;
-    if (!settings.isSoundEnabled || ttl > duration)
-        return minOpacity;
+toggles.sound.onclick = () => handleSound();
 
-    const opacity = ttl / duration;
-    const alpha = maxOpacity - (maxOpacity - minOpacity) * opacity
-    return Math.max(alpha, minOpacity)
-}
+toggles.ambientNoise.onclick = () => handleRain();
 
-const drawBaseLine = () => {
-    pen.strokeStyle = "white";
-    pen.lineWidth = 2;
+toggles.customizations.onclick = () => handleCustomization();
 
-    pen.beginPath();
-    pen.moveTo(start.x, start.y);
-    pen.lineTo(end.x, end.y);
-    pen.stroke();
-}
-
-const drawArc = (radius, color) => {
-    pen.beginPath();
-    pen.strokeStyle = color;
-    pen.arc(center.x, center.y, radius, Math.PI, 2 * Math.PI);
-    pen.stroke();
-}
-
-const drawPoint = (radius, elapsedTime, arc) => {
-    const distance = Math.PI + (elapsedTime * arc.velocity);
-    const maxDistance = 2 * Math.PI;
-    const modDistance = distance % maxDistance;
-    const actualDistance = modDistance > Math.PI ? distance : maxDistance - distance;
-
-    const x = center.x + radius * Math.cos(actualDistance);
-    const y = center.y + radius * Math.sin(actualDistance);
-
-    pen.beginPath();
-    pen.fillStyle = arc.color;
-    pen.arc(x, y, length * 0.0065, 0, 2 * Math.PI);
-    pen.fill();
+selectors.displayTheme.onchange = (event) => {
+    settings.displayTheme = event.target.value;
 }
 
 const draw = () => {
@@ -116,48 +98,18 @@ const draw = () => {
     paper.width = paper.clientWidth;
     paper.height = paper.clientHeight;
 
-    start = {
-        x: paper.width * 0.1,
-        y: paper.height * 0.9,
-    };
-
-    end = {
-        x: paper.width * 0.9,
-        y: paper.height * 0.9,
-    };
-
-    length = end.x - start.x;
-
-    center = {
-        x: paper.width * 0.5,
-        y: paper.height * 0.9
-    };
-
-    drawBaseLine();
-
-    const initialArcRadius = length * 0.05;
-
-    const spacing = (length / 2 - initialArcRadius) / arcs.length;
-    arcs.forEach((arc, index) => {
-        const radius = initialArcRadius + index * spacing;
-
-        // pen.globalAlpha = 0.2;
-        pen.globalAlpha = determineOpacity(currentTime, arc.lastImpactTime, 1000, 0.2, 0.8);
-
-        drawArc(radius, arc.color);
-        drawPoint(radius, elapsedTime, arc);
-
-        const nextImpactTime = arc.nextImpactTime;
-
-        if (currentTime >= nextImpactTime) {
-            if (settings.isSoundEnabled) {
-                getAudio(index).play();
-            }
-
-            arc.lastImpactTime = nextImpactTime;
-            arc.nextImpactTime = calculateNextImpactTime(nextImpactTime, arc.velocity);
-        }
-    });
+    let theme;
+    switch (settings.displayTheme) {
+        case DISPLAY_THEME.fullCircle:
+            theme = new FullCircle(pen, paper, currentTime, elapsedTime);
+            break;
+        case DISPLAY_THEME.semiCircle:
+            theme = new SemiCircle(pen, paper, currentTime, elapsedTime);
+            break;
+        default:
+            throw new Error("unimplemented theme");
+    }
+    theme.draw();
 
     requestAnimationFrame(draw);
 }
