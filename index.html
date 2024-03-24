@@ -23,16 +23,18 @@
 
 <body>
     <div class="control-bar">
-        <button class="toggle" id="sound-toggle" type="button" title="Toggle Pulse" data-toggled="false"
-            onclick="handleSound()">
+        <button class="toggle" id="sound-toggle" type="button" title="Toggle Pulse" data-toggled="false">
             <span class="material-symbols-outlined on">music_note</span>
             <span class="material-symbols-outlined off">music_off</span>
         </button>
 
-        <button class="toggle" id="ambient-noise-toggle" type="button" title="Toggle Rain" data-toggled="false"
-            onclick="handleRain()">
+        <button class="toggle" id="ambient-noise-toggle" type="button" title="Toggle Rain" data-toggled="false">
             <span class="material-symbols-outlined on">water_drop</span>
             <span class="material-symbols-outlined off">format_color_reset</span>
+        </button>
+
+        <button class="toggle" id="customize-toggle" type="button" title="Settings" data-toggled="true">
+            <span class="material-symbols-outlined on off">tune</span>
         </button>
     </div>
 
@@ -42,6 +44,54 @@
 
     <div id="sound-message">
         <p>Click anywhere to toggle sound</p>
+    </div>
+
+    <div id="customize-panel">
+        <table>
+            <tr>
+                <td>
+                    <div class="customize-label">
+                        <span class="material-symbols-outlined">water_drop</span> &nbsp; Ambience
+                    </div>
+                </td>
+                <td>
+                    <div class="custom-select">
+                        <select name="ambience" id="ambience">
+                            <option value="soft-rain">Soft Rain</option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="customize-label">
+                        <span class="material-symbols-outlined">display_settings</span> &nbsp; Theme
+                    </div>
+                </td>
+                <td>
+                    <div class="custom-select">
+                        <select name="display-theme" id="display-theme">
+                            <option value="full-circle">Full Circle</option>
+                            <option value="semi-circle">Semi Circle</option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="customize-label">
+                        <span class="material-symbols-outlined">music_note</span> &nbsp; Notes
+                    </div>
+                </td>
+                <td>
+                    <div class="custom-select">
+                        <select name="key-note" id="key-note">
+                            <option value="vibraphone">Vibraphone</option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <canvas id="paper"></canvas>

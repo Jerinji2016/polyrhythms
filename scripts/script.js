@@ -1,3 +1,4 @@
+import { DISPLAY_THEME } from "./constants.js";
 import { FullCircle } from "./themes/full-circle.js";
 import SemiCircle from "./themes/semi-circle.js";
 import { calculateNextImpactTime } from "./utils.js";
@@ -12,7 +13,8 @@ export const settings = {
     maxLoops: 50,
     volume: 0.15,
     isSoundEnabled: false,
-    isAmbientNoiseEnabled: false
+    isAmbientNoiseEnabled: false,
+    displayTheme: DISPLAY_THEME.fullCircle,
 }
 
 const colors = Array(21).fill("#A6C48A");
@@ -28,6 +30,13 @@ export const arcs = colors.map((color, index) => {
 const toggles = {
     sound: document.querySelector("#sound-toggle"),
     ambientNoise: document.querySelector("#ambient-noise-toggle"),
+    customizations: document.querySelector("#customize-toggle"),
+}
+
+const selectors = {
+    ambience: document.querySelector("#ambience"),
+    displayTheme: document.querySelector("#display-theme"),
+    keyNote: document.querySelector("#key-note"),
 }
 
 document.onvisibilitychange = () => {
@@ -35,7 +44,15 @@ document.onvisibilitychange = () => {
     rainAudio.pause();
 }
 
-paper.onclick = () => handleSound();
+paper.onclick = () => {
+    const isCustomizationPanelOpen = toggles.customizations.dataset.toggled;
+    if (isCustomizationPanelOpen == "true") {
+        toggles.customizations.dataset.toggled = false;
+        return;
+    }
+
+    handleSound();
+}
 
 const handleSound = (enabled = !settings.isSoundEnabled) => {
     settings.isSoundEnabled = enabled;
@@ -59,9 +76,20 @@ const handleRain = (enabled = !settings.isAmbientNoiseEnabled) => {
     }
 }
 
+const handleCustomization = () => {
+    const isCustomizationPanelOpen = toggles.customizations.dataset.toggled == "true";
+    toggles.customizations.dataset.toggled = !isCustomizationPanelOpen;
+}
+
 toggles.sound.onclick = () => handleSound();
 
 toggles.ambientNoise.onclick = () => handleRain();
+
+toggles.customizations.onclick = () => handleCustomization();
+
+selectors.displayTheme.onchange = (event) => {
+    settings.displayTheme = event.target.value;
+}
 
 const draw = () => {
     const currentTime = new Date().getTime();
@@ -70,8 +98,17 @@ const draw = () => {
     paper.width = paper.clientWidth;
     paper.height = paper.clientHeight;
 
-    const theme = new FullCircle(pen, paper, currentTime, elapsedTime);
-    // const theme = new SemiCircle(pen, paper, currentTime, elapsedTime);
+    let theme;
+    switch (settings.displayTheme) {
+        case DISPLAY_THEME.fullCircle:
+            theme = new FullCircle(pen, paper, currentTime, elapsedTime);
+            break;
+        case DISPLAY_THEME.semiCircle:
+            theme = new SemiCircle(pen, paper, currentTime, elapsedTime);
+            break;
+        default:
+            throw new Error("unimplemented theme");
+    }
     theme.draw();
 
     requestAnimationFrame(draw);
