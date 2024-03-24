@@ -39,7 +39,7 @@ const handleSound = (enabled = !settings.isSoundEnabled) => {
     handleRain(enabled);
 }
 
-const rainAudio = new Audio("ambience/soft_rain.mp3");
+const rainAudio = new Audio("assets/audio/ambience/soft_rain.mp3");
 
 const handleRain = (enabled = !settings.isAmbientNoiseEnabled) => {
     settings.isAmbientNoiseEnabled = enabled;
@@ -62,7 +62,7 @@ const arcs = colors.map((color, index) => {
 });
 
 const getAudio = (index) => {
-    const audio = new Audio(`notes/vibraphone-key-${index}.wav`)
+    const audio = new Audio(`assets/audio/vibraphone/vibraphone-key-${index}.wav`)
     audio.volume = settings.volume;
     return audio;
 }
@@ -141,7 +141,6 @@ const draw = () => {
     arcs.forEach((arc, index) => {
         const radius = initialArcRadius + index * spacing;
 
-        // pen.globalAlpha = 0.2;
         pen.globalAlpha = determineOpacity(currentTime, arc.lastImpactTime, 1000, 0.2, 0.8);
 
         drawArc(radius, arc.color);
