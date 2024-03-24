@@ -1,5 +1,3 @@
-// Ref: https://codepen.io/Hyperplexed/pen/XWxqgGE?editors=1100
-
 const paper = document.getElementById("paper");
 const pen = paper.getContext("2d");
 
@@ -55,10 +53,6 @@ const handleRain = (enabled = !settings.isAmbientNoiseEnabled) => {
     }
 }
 
-const toggleRain = play => {
-    
-}
-
 const arcs = colors.map((color, index) => {
     const oneFullLoop = 2 * Math.PI;
     const velocity = oneFullLoop * (settings.maxLoops - index) / settings.resetDuration;
@@ -70,13 +64,22 @@ const arcs = colors.map((color, index) => {
 const getAudio = (index) => {
     const audio = new Audio(`notes/vibraphone-key-${index}.wav`)
     audio.volume = settings.volume;
-    return audio; 
+    return audio;
+}
+
+const determineOpacity = (currentTime, lastImpactTime, duration, minOpacity, maxOpacity) => {
+    const ttl = currentTime - lastImpactTime;
+    if (!settings.isSoundEnabled || ttl > duration)
+        return minOpacity;
+
+    const opacity = ttl / duration;
+    const alpha = maxOpacity - (maxOpacity - minOpacity) * opacity
+    return Math.max(alpha, minOpacity)
 }
 
 const drawBaseLine = () => {
     pen.strokeStyle = "white";
     pen.lineWidth = 2;
-    pen.globalAlpha = 0.5;
 
     pen.beginPath();
     pen.moveTo(start.x, start.y);
@@ -137,6 +140,9 @@ const draw = () => {
     const spacing = (length / 2 - initialArcRadius) / arcs.length;
     arcs.forEach((arc, index) => {
         const radius = initialArcRadius + index * spacing;
+
+        // pen.globalAlpha = 0.2;
+        pen.globalAlpha = determineOpacity(currentTime, arc.lastImpactTime, 1000, 0.2, 0.8);
 
         drawArc(radius, arc.color);
         drawPoint(radius, elapsedTime, arc);
