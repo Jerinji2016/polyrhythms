@@ -4,7 +4,8 @@ export const DISPLAY_THEME = {
 };
 
 export const AMBIENCE_SOUNDS = {
-    softRain: "soft-rain"
+    softRain: "soft-rain",
+    relaxingMountain: "relaxing-mountain",
 };
 
 export const KEY_NOTES = {
