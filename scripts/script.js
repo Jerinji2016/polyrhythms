@@ -91,7 +91,6 @@ selectors.displayTheme.onchange = (event) => {
 
 selectors.ambience.onchange = (event) => {
     const value = event.target.value;
-    console.log(value);
 
     settings.ambience = value;
     setAmbienceAudio(value);
