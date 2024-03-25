@@ -95,7 +95,7 @@ selectors.ambience.onchange = (event) => {
     settings.ambience = value;
     setAmbienceAudio(value);
 
-    handleAmbience();
+    handleAmbience(settings.isAmbientNoiseEnabled);
 }
 
 const draw = () => {
