@@ -60,10 +60,10 @@ const handleSound = (enabled = !settings.isSoundEnabled) => {
     toggles.sound.dataset.toggled = enabled;
 
     if (settings.isAmbientNoiseEnabled)
-        handleRain(true);
+        handleAmbience(true);
 }
 
-const handleRain = (enabled = !settings.isAmbientNoiseEnabled) => {
+const handleAmbience = (enabled = !settings.isAmbientNoiseEnabled) => {
     settings.isAmbientNoiseEnabled = enabled;
     toggles.ambientNoise.dataset.toggled = enabled;
 
@@ -81,7 +81,7 @@ const handleCustomization = () => {
 
 toggles.sound.onclick = () => handleSound();
 
-toggles.ambientNoise.onclick = () => handleRain();
+toggles.ambientNoise.onclick = () => handleAmbience();
 
 toggles.customizations.onclick = () => handleCustomization();
 
@@ -95,8 +95,7 @@ selectors.ambience.onchange = (event) => {
     settings.ambience = value;
     setAmbienceAudio(value);
 
-    if (settings.isAmbientNoiseEnabled)
-        getAmbienceAudio().play();
+    handleAmbience();
 }
 
 const draw = () => {
