@@ -1,6 +1,6 @@
 import { AMBIENCE_SOUNDS, DISPLAY_THEME, KEY_NOTES } from "./constants.js";
 import { FullCircle } from "./themes/full-circle.js";
-import { MAX_ANGLE, Pendulum, MIN_ANGLE } from "./themes/pendulum.js";
+import { Pendulum } from "./themes/pendulum.js";
 import SemiCircle from "./themes/semi-circle.js";
 import { calculateNextImpactTime, getAmbienceAudio, setAmbienceAudio } from "./utils.js";
 
@@ -15,7 +15,7 @@ export const settings = {
     volume: 0.15,
     isSoundEnabled: false,
     isAmbientNoiseEnabled: false,
-    displayTheme: DISPLAY_THEME.pendulum,
+    displayTheme: DISPLAY_THEME.fullCircle,
     ambience: AMBIENCE_SOUNDS.softRain,
     keyNote: KEY_NOTES.vibraphone,
 }
