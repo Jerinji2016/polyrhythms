@@ -1,7 +1,7 @@
-import { DISPLAY_THEME } from "./constants.js";
+import { AMBIENCE_SOUNDS, DISPLAY_THEME } from "./constants.js";
 import { FullCircle } from "./themes/full-circle.js";
 import SemiCircle from "./themes/semi-circle.js";
-import { calculateNextImpactTime } from "./utils.js";
+import { calculateNextImpactTime, getAmbienceAudio, setAmbienceAudio } from "./utils.js";
 
 const paper = document.getElementById("paper");
 const pen = paper.getContext("2d");
@@ -15,6 +15,7 @@ export const settings = {
     isSoundEnabled: false,
     isAmbientNoiseEnabled: false,
     displayTheme: DISPLAY_THEME.fullCircle,
+    ambience: AMBIENCE_SOUNDS.softRain,
 }
 
 const colors = Array(21).fill("#A6C48A");
@@ -41,7 +42,7 @@ const selectors = {
 
 document.onvisibilitychange = () => {
     handleSound(false);
-    rainAudio.pause();
+    getAmbienceAudio().pause();
 }
 
 paper.onclick = () => {
@@ -62,17 +63,14 @@ const handleSound = (enabled = !settings.isSoundEnabled) => {
         handleRain(true);
 }
 
-const rainAudio = new Audio("assets/audio/ambience/soft_rain.mp3");
-
 const handleRain = (enabled = !settings.isAmbientNoiseEnabled) => {
     settings.isAmbientNoiseEnabled = enabled;
     toggles.ambientNoise.dataset.toggled = enabled;
 
     if (enabled && settings.isSoundEnabled) {
-        rainAudio.volume = 0.5;
-        rainAudio.play();
+        getAmbienceAudio().play();
     } else {
-        rainAudio.pause();
+        getAmbienceAudio().pause();
     }
 }
 
@@ -89,6 +87,16 @@ toggles.customizations.onclick = () => handleCustomization();
 
 selectors.displayTheme.onchange = (event) => {
     settings.displayTheme = event.target.value;
+}
+
+selectors.ambience.onchange = (event) => {
+    const value = event.target.value;
+
+    settings.ambience = value;
+    setAmbienceAudio(value);
+
+    if (settings.isAmbientNoiseEnabled)
+        getAmbienceAudio().play();
 }
 
 const draw = () => {
