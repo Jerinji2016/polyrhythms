@@ -1,6 +1,6 @@
-import { AMBIENCE_SOUNDS, DISPLAY_THEME } from "./constants.js";
+import { AMBIENCE_SOUNDS, DISPLAY_THEME, KEY_NOTES } from "./constants.js";
 import { FullCircle } from "./themes/full-circle.js";
-import { Pendulum } from "./themes/pendulum.js";
+import { MAX_ANGLE, Pendulum, MIN_ANGLE } from "./themes/pendulum.js";
 import SemiCircle from "./themes/semi-circle.js";
 import { calculateNextImpactTime, getAmbienceAudio, setAmbienceAudio } from "./utils.js";
 
@@ -17,6 +17,7 @@ export const settings = {
     isAmbientNoiseEnabled: false,
     displayTheme: DISPLAY_THEME.pendulum,
     ambience: AMBIENCE_SOUNDS.softRain,
+    keyNote: KEY_NOTES.vibraphone,
 }
 
 const colors = Array(21).fill("#A6C48A");
@@ -26,6 +27,14 @@ export const arcs = colors.map((color, index) => {
     const velocity = oneFullLoop * (settings.maxLoops - index) / settings.resetDuration;
     const lastImpactTime = 0;
     const nextImpactTime = calculateNextImpactTime(startTime, Math.PI, velocity)
+    return { color, velocity, lastImpactTime, nextImpactTime }
+});
+
+export const pendulumArcs = colors.map((color, index) => {
+    const oneFullLoop = Math.PI;
+    const velocity = oneFullLoop * (settings.maxLoops - index) / settings.resetDuration;
+    const lastImpactTime = 0;
+    const nextImpactTime = calculateNextImpactTime(startTime, Math.PI / 2, velocity)
     return { color, velocity, lastImpactTime, nextImpactTime }
 });
 
@@ -40,6 +49,10 @@ const selectors = {
     displayTheme: document.querySelector("#display-theme"),
     keyNote: document.querySelector("#key-note"),
 }
+
+selectors.displayTheme.value = settings.displayTheme;
+selectors.ambience.value = settings.ambience;
+selectors.keyNote.value = settings.keyNote;
 
 document.onvisibilitychange = () => {
     handleSound(false);
