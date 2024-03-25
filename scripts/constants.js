@@ -1,6 +1,7 @@
 export const DISPLAY_THEME = {
     fullCircle: "full-circle",
-    semiCircle: "semi-circle"
+    semiCircle: "semi-circle",
+    pendulum: "pendulum"
 };
 
 export const AMBIENCE_SOUNDS = {

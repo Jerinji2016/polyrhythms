@@ -1,5 +1,6 @@
 import { AMBIENCE_SOUNDS, DISPLAY_THEME } from "./constants.js";
 import { FullCircle } from "./themes/full-circle.js";
+import { Pendulum } from "./themes/pendulum.js";
 import SemiCircle from "./themes/semi-circle.js";
 import { calculateNextImpactTime, getAmbienceAudio, setAmbienceAudio } from "./utils.js";
 
@@ -14,7 +15,7 @@ export const settings = {
     volume: 0.15,
     isSoundEnabled: false,
     isAmbientNoiseEnabled: false,
-    displayTheme: DISPLAY_THEME.fullCircle,
+    displayTheme: DISPLAY_THEME.pendulum,
     ambience: AMBIENCE_SOUNDS.softRain,
 }
 
@@ -112,6 +113,9 @@ const draw = () => {
             break;
         case DISPLAY_THEME.semiCircle:
             theme = new SemiCircle(pen, paper, currentTime, elapsedTime);
+            break;
+        case DISPLAY_THEME.pendulum:
+            theme = new Pendulum(pen, paper, currentTime, elapsedTime);
             break;
         default:
             throw new Error("unimplemented theme");
